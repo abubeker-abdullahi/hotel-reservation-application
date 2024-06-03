@@ -6,14 +6,11 @@ public class Customer {
     private String firstName;
     private String lastName;
     private String email;
-
-    private final String emailRegex = "^(.+)@(.+).com$";
-    private final Pattern pattern = Pattern.compile(emailRegex);
     
     public Customer(String firstName, String lastName, String email) {
         super();
 
-        emailValidation(email); //checks email validation
+        emailValidation(email); //validates email format
 
         this.firstName = firstName;
         this.lastName = lastName;
@@ -49,8 +46,11 @@ public class Customer {
         return "Customer [firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + "]";
     }
 
-    //email regex validation
+    //Validates the format of the email address using regex.
     public void emailValidation(String email) {
+        final String emailRegex = "^(.+)@(.+).com$";
+        final Pattern pattern = Pattern.compile(emailRegex);
+        
         if(!pattern.matcher(email).matches()) {
             throw new IllegalArgumentException(email + ": Invalid input, enter correct format for email.");
         }
