@@ -10,6 +10,9 @@ public class Reservation {
     
     public Reservation(IRoom room, Customer customer, Date checkInDate, Date checkOutDate) {
         super();
+
+        checkInValidation(checkInDate, checkOutDate); //Validates check-in date against check-out date.
+
         this.room = room;
         this.customer = customer;
         this.checkInDate = checkInDate;
@@ -52,5 +55,12 @@ public class Reservation {
     public String toString() {
         return "Reservation [room=" + room + ", customer=" + customer + ", checkInDate=" + checkInDate
                 + ", checkOutDate=" + checkOutDate + "]";
+    }
+
+    // Validates check-in date against check-out date.
+    public void checkInValidation(Date checkInDate, Date checkOutDate) {
+        if (checkInDate.after(checkOutDate)) {
+            throw new IllegalArgumentException("Check-in date must be before check-out date.");
+        }
     }
 }
