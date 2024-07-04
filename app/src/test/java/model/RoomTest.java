@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import model.Room.RoomType;
+
 /**
  * Test class for the {@link model.Room} and {@link model.FreeRoom} classes.
  */
@@ -99,7 +100,7 @@ public class RoomTest {
      */
     @Test
     public void testFreeRoomToString() {
-        assertEquals("FreeRoom {roomNumber=100, roomType=SINGLE, isFree=true}", freeroom.toString());
+        assertEquals("FreeRoom {roomNumber=100, roomPrice=$0.0, roomType=SINGLE, isFree=true}", freeroom.toString());
     }
 
     /**
@@ -107,6 +108,6 @@ public class RoomTest {
      */
     @Test
     public void testRoomToString() {
-        assertEquals("Room {roomNumber=100, roomPrice=$120.5, roomType=SINGLE, isFree=true}", room.toString());
+        assertEquals("Room {roomNumber=100, roomPrice=$120.5, roomType=SINGLE}", room.toString());
     }
 }

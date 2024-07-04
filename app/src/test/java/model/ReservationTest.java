@@ -22,20 +22,20 @@ public class ReservationTest {
     private Customer customer;
     private Date checkInDate;
     private Date checkOutDate;
-
+    
     /**
      * Sets up the test data before each test.
      * 
      * @throws ParseException if there is an error parsing the date
      */
     @BeforeEach
-    private void setUp() throws ParseException {
+    public void setUp() throws ParseException {
         dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 
-        room = new Room("100", 200.5, RoomType.DOUBLE, false);
+        room = new Room("100", 200.5, RoomType.DOUBLE, true);
         customer = new Customer("Abubeker", "Abdullahi", "abubeker@email.com");
-        checkInDate = dateFormat.parse("06/15/2024");
-        checkOutDate = dateFormat.parse("06/20/2024");
+        checkInDate = dateFormat.parse("06/15/2099");
+        checkOutDate = dateFormat.parse("06/20/2099");
     }
 
     /**
@@ -44,7 +44,7 @@ public class ReservationTest {
      * @throws ParseException if there is an error parsing the date
      */
     @Test
-    private void testReservationSetterAndGetter() throws ParseException {
+    public void testReservationSetterAndGetter() throws ParseException {
         Reservation reservation = new Reservation(room, customer, checkInDate, checkOutDate);
 
         reservation.setRoom(room);
@@ -64,7 +64,7 @@ public class ReservationTest {
      * @throws ParseException if there is an error parsing the date
      */
     @Test
-    private void testNullRoom() throws ParseException {
+    public void testNullRoom() throws ParseException {
         assertThrows(IllegalArgumentException.class, () -> {
             new Reservation(null, customer, checkInDate, checkOutDate);
         });
@@ -76,7 +76,7 @@ public class ReservationTest {
      * @throws ParseException if there is an error parsing the date
      */
     @Test
-    private void testNullCustomer() throws ParseException {
+    public void testNullCustomer() throws ParseException {
         assertThrows(IllegalArgumentException.class, () -> {
             new Reservation(room, null, checkInDate, checkOutDate);
         });
@@ -88,7 +88,7 @@ public class ReservationTest {
      * @throws ParseException if there is an error parsing the date
      */
     @Test
-    private void testNullCheckInDate() throws ParseException {
+    public void testNullCheckInDate() throws ParseException {
         assertThrows(IllegalArgumentException.class, () -> {
             new Reservation(room, customer, null, checkOutDate);
         });
@@ -100,7 +100,7 @@ public class ReservationTest {
      * @throws ParseException if there is an error parsing the date
      */
     @Test
-    private void testNullCheckOutDate() throws ParseException {
+    public void testNullCheckOutDate() throws ParseException {
         assertThrows(IllegalArgumentException.class, () -> {
             new Reservation(room, customer, checkInDate, null);
         });
@@ -112,13 +112,14 @@ public class ReservationTest {
      * @throws ParseException if there is an error parsing the date
      */
     @Test
-    private void testReservationToString() throws ParseException {
+    public void testReservationToString() throws ParseException {
         Reservation reservation = new Reservation(room, customer, checkInDate, checkOutDate);
 
-        String expected = "Reservation {room=Room {roomNumber=100, roomPrice=$200.5, roomType=DOUBLE, isFree=false}, " +
-                          "customer=Customer {firstName=Abubeker, lastName=Abdullahi, email=abubeker@email.com}, " +
-                          "checkInDate=Sat Jun 15 00:00:00 UTC 2024, " +
-                          "checkOutDate=Thu Jun 20 00:00:00 UTC 2024}";
+        String expected = "Reservation {room=Room {roomNumber=100, roomPrice=$200.5, roomType=DOUBLE}, \n" + //
+                        "customer=Customer {firstName=Abubeker, lastName=Abdullahi, email=abubeker@email.com}, \n" + //
+                        "checkInDate=Mon Jun 15 00:00:00 UTC 2099, \n" + //
+                        "checkOutDate=Sat Jun 20 00:00:00 UTC 2099}\n" + //
+                        "";
 
         assertEquals(expected, reservation.toString());
     }
@@ -129,14 +130,23 @@ public class ReservationTest {
      * @throws ParseException if there is an error parsing the date
      */
     @Test
-    public void testCheckInDateValidation() throws ParseException {
-        dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-
-        Date checkInDate2 = dateFormat.parse("06/20/2024");
-        Date checkOutDate2 = dateFormat.parse("06/15/2024");
-
+    public void testCheckInDateAfterCheckOutDate() throws ParseException {
+        Date invalidCheckInDate = dateFormat.parse("06/21/2099");
         assertThrows(IllegalArgumentException.class, () -> {
-            new Reservation(room, customer, checkInDate2, checkOutDate2);
+            new Reservation(room, customer, invalidCheckInDate, checkOutDate);
+        });
+    }
+
+    /**
+     * Tests that the check-in date cannot be before today's date.
+     * 
+     * @throws ParseException if there is an error parsing the date
+     */
+    @Test
+    public void testCheckInDateBeforeToday() throws ParseException {
+        Date pastDate = new Date(System.currentTimeMillis() - 24 * 60 * 60 * 1000); // Yesterday's date
+        assertThrows(IllegalArgumentException.class, () -> {
+            new Reservation(room, customer, pastDate, checkOutDate);
         });
     }
 }
