@@ -4,6 +4,9 @@ plugins {
 
     // Apply the JaCoCo plugin for code coverage
     id("jacoco")
+
+    // Apply the Maven Publish plugin for publishing artifacts
+    id("maven-publish")
 }
 
 repositories {
@@ -50,5 +53,27 @@ tasks.jacocoTestReport {
         xml.required.set(false)
         csv.required.set(false)
         html.outputLocation.set(file("$buildDir/reports/jacoco"))
+    }
+}
+
+// Maven Publish configuration
+publishing {
+    publications {
+        create<MavenPublication>("gpr") {
+            from(components["java"])
+            groupId = "com.example"
+            artifactId = "my-app"
+            version = "1.0.0"
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/abubeker-abdullahi/hotel-reservation-application")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.token") as String? ?: System.getenv("TOKEN")
+            }
+        }
     }
 }
